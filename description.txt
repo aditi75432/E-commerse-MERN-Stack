@@ -1,0 +1,4 @@
+Task 1-------> Bsic server created and port connected
+task2---->db connected
+task 3----->
+"separation of concern"
