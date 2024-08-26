@@ -2,6 +2,13 @@
 
 E-Commerce Website MERN stack
 
+
+## See the Demo video here
+
+https://github.com/user-attachments/assets/e3fc70a5-b898-47f4-8487-a0865d59ebc2
+
+
+
 <h2>Home Page</h2>
 
 ![Screenshot 2024-07-24 170335](https://github.com/user-attachments/assets/c96d5864-62e9-4cd8-b1c3-49e9f0472bf6)
