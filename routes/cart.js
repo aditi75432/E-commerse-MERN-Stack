@@ -3,6 +3,7 @@ const router = express.Router();
 const {isLoggedIn} = require('../middleware');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const stripe = require("stripe")("sk_test_tR3PYbcVNZZ796tH88S4VQ2u");
 
 router.get('/user/cart' , isLoggedIn , async(req,res)=>{
     const user = await User.findById(req.user._id).populate('cart');
@@ -21,5 +22,6 @@ router.post('/user/:productId/add' , isLoggedIn , async(req,res)=>{
     await user.save();
     res.redirect('/user/cart'); 
 })
+
 
 module.exports = router;
