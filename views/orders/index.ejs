@@ -1,0 +1,16 @@
+<%- include('../layout/boilerplate') %>
+
+<h2>My Orders</h2>
+
+<% orders.forEach(order => { %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <p><strong>Purchased on:</strong> <%= order.purchasedAt.toDateString() %></p>
+      <ul>
+        <% order.items.forEach(item => { %>
+          <li><%= item.name %> - $<%= item.price %></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+<% }) %>

@@ -1,72 +1,65 @@
+
+
 const express = require('express');
 const router = express.Router();
-const request = require('request');
-const jsSHA = require('jssha');
-const {v4:uuid} = require('uuid')
-const {isLoggedIn} = require('../middleware')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // secret key from .env
+const { isLoggedIn } = require('../middleware');
+const User = require('../models/User');
 
 
-router.post('/payment_gateway/payumoney', isLoggedIn, (req, res) => {
-    req.body.txnid = uuid();//Here pass txnid and it should be different on every call
-    req.body.email = req.user.email;
-    req.body.firstname = req.user.username; //Here save all the details in pay object 
+router.post('/create-checkout-session', isLoggedIn, async (req, res) => {
+    const user = await User.findById(req.user._id).populate('cart');
     
-    const pay = req.body;
-
-    const hashString = process.env.MERCHANT_KEY //store in in different file
-                        + '|' + pay.txnid
-                        + '|' + pay.amount 
-                        + '|' + pay.productinfo 
-                        + '|' + pay.firstname 
-                        + '|' + pay.email 
-                        + '|' + '||||||||||'
-                        + process.env.MERCHANT_SALT //store in in different file
-   
-    const sha = new jsSHA('SHA-512', "TEXT");
-    sha.update(hashString);
-    //Getting hashed value from sha module
-    const hash = sha.getHash("HEX");
-    
-    //We have to additionally pass merchant key to API so remember to include it.
-    pay.key = process.env.MERCHANT_KEY //store in in different file;
-    pay.surl = 'http://localhost:5000/payment/success';
-    pay.furl = 'http://localhost:5000/payment/fail';
-    pay.hash = hash;
-    //Making an HTTP/HTTPS call with request
-    request.post({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+    const line_items = user.cart.map(product => ({
+        price_data: {
+            currency: 'usd',
+            product_data: {
+                name: product.desc
+            },
+            unit_amount: product.price * 100 // cents
         },
-        url: 'https://sandboxsecure.payu.in/_payment', //Testing url
-        form: pay
-    }, function (error, httpRes, body) {
-        if (error) 
-            res.send(
-                {status: false, 
-                message:error.toString()
-                }
-            );
+        quantity: 1
+    }));
 
-        if (httpRes.statusCode === 200) {
-            res.send(body);
-        }
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items,
+        mode: 'payment',
+        success_url: 'http://localhost:5000/success',
+        cancel_url: 'http://localhost:5000/cancel'
+    });
 
-        else if (httpRes.statusCode >= 300 && httpRes.statusCode <= 400) {
-            res.redirect(httpRes.headers.location.toString());
-        }
-    })
+    res.redirect(303, session.url); // 303 = redirect for POST
 });
 
-// success route
-router.post('/payment/success', (req, res) => {
-    res.send(req.body);
-})
+// success/cancel pages
+// router.get('/success', (req, res) => {
+//     res.send('✅ Payment Successful (Test Mode)');
+// });
+router.get('/success', async (req, res) => {
+    const user = await User.findById(req.user._id).populate('cart');
 
-router.post('/payment/fail', (req, res) => {
-    res.send(req.body);
-})
+    // Move cart to orders
+    user.orders.push({
+        items: user.cart,
+        purchasedAt: new Date()
+    });
 
+    user.cart = []; // Empty cart after order
+    await user.save();
+
+    res.render('payment/success', { user });
+});
+
+
+router.get('/cancel', (req, res) => {
+    res.send('❌ Payment Cancelled');
+});
+
+router.get('/user/orders', isLoggedIn, async (req, res) => {
+    const user = await User.findById(req.user._id).populate('orders.items');
+    res.render('orders/index', { orders: user.orders });
+});
 
 
 module.exports = router;

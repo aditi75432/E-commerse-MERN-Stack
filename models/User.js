@@ -25,7 +25,15 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref:'Product'
         }
+    ],
+    orders: [
+        {
+            items: [{ type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Product' }],
+            purchasedAt: Date
+        }
     ]
+      
 
 });
 
