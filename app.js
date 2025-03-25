@@ -34,6 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+
+
 let secret = process.env.SECRET || 'weneedabettersecretkey';
 
 let store = MongoStore.create({
