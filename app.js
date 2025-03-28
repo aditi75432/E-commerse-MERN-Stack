@@ -16,6 +16,8 @@ const User = require('./models/User');
 const seedDB = require('./seed')
 const MongoStore = require('connect-mongo');
 
+
+
 const dbURL = process.env.dbURL || 'mongodb://localhost:27017/shopping-adi-app';
 
 mongoose.set('strictQuery', true);
@@ -83,6 +85,7 @@ const authRoutes = require('./routes/auth');
 const cartRoutes = require('./routes/cart');
 const productApi = require('./routes/api/productapi');
 const paymentRoutes = require('./routes/payment');
+const visionSearchRoutes = require('./routes/api/visionSearch');
 
 
 
@@ -91,6 +94,9 @@ app.get('/' , (req,res)=>{
 })
 
 // middle express
+
+app.use('/', visionSearchRoutes); 
+
 app.use(productRoutes);
 app.use(reviewRoutes);
 app.use(authRoutes);
