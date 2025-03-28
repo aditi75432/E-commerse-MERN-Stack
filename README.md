@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/e3fc70a5-b898-47f4-8487-a0865d59ebc2
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB (Mongoose ODM)
 - **Authentication**: JSON Web Tokens (JWT)
-- **Payment Integration**: Stripe (Future scope)
+- **Payment Integration**: Stripe (Test Mode)
 - **Deployment**: Render / Vercel / Netlify
 
 ## Installation & Setup ⚙️
