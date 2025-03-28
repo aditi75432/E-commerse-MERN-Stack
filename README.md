@@ -68,8 +68,6 @@ Ensure you have the following installed:
 2. **Install dependencies:**
    ```sh
    npm install   # Install backend dependencies
-   cd client
-   npm install   # Install frontend dependencies
    ```
 3. **Set up environment variables:** Create a `.env` file in the root directory with the following:
    ```env
@@ -77,16 +75,12 @@ Ensure you have the following installed:
    JWT_SECRET=your_jwt_secret
    STRIPE_SECRET_KEY=your_stripe_key (if applicable)
    ```
-4. **Run the backend server:**
+4. **Run :**
    ```sh
    npm start
    ```
-5. **Run the frontend:**
-   ```sh
-   cd client
-   npm start
-   ```
-6. **Access the app:** Open `http://localhost:3000` in your browser.
+
+5. **Access the app:** Open `http://localhost:3000` in your browser.
 
 ## Folder Structure 📁
 ```
@@ -111,8 +105,7 @@ E-commerse-MERN-Stack/
 ## Contributing 🤝
 Contributions are welcome! If you'd like to improve the project, feel free to fork the repo and submit a PR.
 
-## License 📜
-This project is licensed under the **MIT License**.
+
 
 ---
 Made with ❤️ by **Aditi Mehta**
