@@ -96,11 +96,6 @@ E-commerse-MERN-Stack/
 │── package.json      # Dependencies and scripts
 ```
 
-## Future Enhancements 🔥
-- AI-powered **product recommendations**
-- **Chatbot for customer support**
-- **Smart inventory prediction**
-- **Fraud detection for payments**
 
 ## Contributing 🤝
 Contributions are welcome! If you'd like to improve the project, feel free to fork the repo and submit a PR.
