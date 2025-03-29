@@ -103,6 +103,8 @@ app.use(authRoutes);
 app.use(cartRoutes);
 app.use(productApi);
 app.use(paymentRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 
 const port = 5000;

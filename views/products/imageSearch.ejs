@@ -1,4 +1,4 @@
-<%- include('../partials/navbar') %>
+<!-- <%- include('../partials/navbar') %>
 
 <div class="search-container">
   <h2>🔎 Image-Based Product Search</h2>
@@ -190,29 +190,43 @@
   form.addEventListener('submit', () => {
     loader.style.display = 'block';
   });
-</script>
+</script> -->
 
+<div class="navbar">
+  <a href="/products" class="back-btn">&#8592; Go Back to Products</a>
+</div>
 
-
-<!-- 
-
-   <%- include('../partials/navbar') %>
-
-<div class="container">
-  <h1>Image Search</h1>
-  <form action="/image-search" method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" accept="image/*" required />
-    <button type="submit">Search</button>
+<div class="search-container">
+  <h2>Visual Product Search</h2>
+  <p>Upload a photo of what you're looking for and we'll find similar products.</p>
+  
+  <form action="/image-search" method="POST" enctype="multipart/form-data" id="imageForm">
+    <div class="upload-box">
+      <label for="imageInput" class="file-label">
+        <i class="fa fa-upload"></i> Drag & Drop or Click to Upload
+      </label>
+      <input type="file" id="imageInput" name="image" accept="image/*" required hidden>
+    </div>
+    <button type="submit" class="submit-btn">🔍 Find Similar Products</button>
   </form>
+
+  <div id="previewContainer">
+    <img id="imagePreview" src="" alt="Preview" style="display:none;">
+  </div>
+
+  <div id="loader" style="display: none;">
+    <div class="spinner"></div>
+    <p>Analyzing image...</p>
+  </div>
 
   <div class="results">
     <% if (!products || products.length === 0) { %>
-      <p class="no-results">No products matched the image 🤔</p>
+      <p class="no-results">No matching products found. Try another image.</p>
     <% } else { %>
       <div class="product-grid">
         <% products.forEach(product => { %>
           <div class="product-card">
-            <img src="<%= product.image %>" alt="<%= product.name %>">
+            <img src="<%= product.img %>" alt="<%= product.name %>">
             <h4><%= product.name %></h4>
             <p><%= product.price %> ₹</p>
           </div>
@@ -223,64 +237,127 @@
 </div>
 
 <style>
-  .container {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 20px;
+  body {
     font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+    text-align: center;
   }
 
-  form {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
+  .navbar {
+    background: #1a73e8;
+    padding: 15px;
+    text-align: left;
   }
 
-  input[type="file"] {
-    padding: 5px;
+  .back-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
   }
 
-  button {
+  .search-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  }
+
+  h2 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .upload-box {
+    border: 2px dashed #bbb;
+    padding: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .file-label {
+    font-size: 16px;
+    color: #555;
+  }
+
+  .submit-btn {
     background-color: #1a73e8;
     color: white;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
     border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
+    transition: 0.3s;
   }
 
-  .results {
-    margin-top: 20px;
-  }
-
-  .no-results {
-    color: gray;
-    font-style: italic;
+  .submit-btn:hover {
+    background-color: #0f5fcb;
   }
 
   .product-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
+    margin-top: 30px;
   }
 
   .product-card {
-    width: 180px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    transition: box-shadow 0.2s ease;
-  }
-
-  .product-card:hover {
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
 
   .product-card img {
     max-width: 100%;
-    height: auto;
-    border-radius: 4px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
   }
-</style> -->
+
+  .no-results {
+    color: #888;
+    font-style: italic;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 4px solid #ccc;
+    border-top: 4px solid #1a73e8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  document.getElementById('imageInput').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imagePreview').src = e.target.result;
+        document.getElementById('imagePreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('imageForm').addEventListener('submit', function() {
+    document.getElementById('loader').style.display = 'block';
+  });
+</script>
